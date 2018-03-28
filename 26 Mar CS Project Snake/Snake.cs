@@ -19,9 +19,13 @@ namespace _26_Mar_CS_Project_Snake
         private Coord anchorPoint;
         private List<Square> body;
         private int size;
+        SolidBrush brush;
+        Pen pen;
 
         public Snake(Coord anchorPoint, float qtyOfSquare, int size, int a, int r, int g, int b)
         {
+            brush = new SolidBrush(Color.White);
+            pen = new Pen(Color.Red);
             this.anchorPoint = anchorPoint;
             this.size = size;
             body = new List<Square>();
@@ -33,14 +37,12 @@ namespace _26_Mar_CS_Project_Snake
             }
         }
 
-        public void DrawSnake(Graphics graphics)
+        public void Draw(Graphics graphics)
         {
-            SolidBrush brush = new SolidBrush(Color.White);
-            Pen pen = new Pen(Color.Red);
             foreach (var item in body)
             {
                 brush.Color = Color.FromArgb(item.A, item.R, item.G, item.B);
-                graphics.FillRectangle(brush, new Rectangle(item.X + this.size/4, item.Y + this.size / 4, this.size / 2, this.size / 2));
+                graphics.FillRectangle(brush, new Rectangle(item.X + this.size / 4, item.Y + this.size / 4, this.size / 2, this.size / 2));
                 graphics.DrawRectangle(pen, new Rectangle(item.X + this.size / 4, item.Y + this.size / 4, this.size / 2, this.size / 2));
             }
             brush.Color = Color.FromArgb(255, 0, 0);
@@ -49,8 +51,6 @@ namespace _26_Mar_CS_Project_Snake
         
         public bool Move(Direction direction)
         {
-            
-            
             switch (direction)
             {
                 case Direction.UP:

@@ -13,32 +13,36 @@ namespace _26_Mar_CS_Project_Snake
 {
     public partial class Form1 : Form
     {
-        CancellationToken cancellationToken;
-        Graphics graphics;
-        Snake mySnake;
-        List<Square> fruits;
-        Random rando;
-        Queue<Direction> movedDirection;
-        const int SQUARESIZE = 100;
-        int fruitsCount = 0;
-        int x;
-        int y;
-        int delayTime = 500;
+        static Graphics graphics;
+        static Snake mySnake;
+        static List<Square> fruits;
+        static Random rando;
+        static Queue<Direction> movedDirection;
+        public static int squareSize = 100;
+        static int fruitsCount = 0;
+        static int x;
+        static int y;
+        static int delayTime = 500;
         const int SPEEDINC = 25;
+        User_Choice userChoice;
 
-        int level = 0;
+        static int level = 0;
 
         public Form1()
         {
+            userChoice = new User_Choice();
+            userChoice.Show();
+            this.Visible = false;
             InitializeComponent();
+            //this.Enabled = false;
             Loop();
-
         }
 
         private async void Loop()
         {
             while (true)
             {
+
                 try
                 {
                     await GameLoop();
@@ -53,6 +57,17 @@ namespace _26_Mar_CS_Project_Snake
         {
             bool resetGame = false;
             await Task.Delay(delayTime);
+            if (userChoice.Visible)
+            {
+                this.Hide();
+                return;
+            }
+            else if (!this.Visible)
+            {
+                ResetGame();
+                this.Show();
+            }
+
             if (fruits.Count == 0)
             {
                 delayTime -= SPEEDINC;
@@ -63,7 +78,7 @@ namespace _26_Mar_CS_Project_Snake
                 if (mySnake.Move(movedDirection.Peek()))
                 {
                     resetGame = true;
-                    return;
+                    //return;
                 }
                 movedDirection.Clear();
             }
@@ -72,17 +87,21 @@ namespace _26_Mar_CS_Project_Snake
                 resetGame = true;
             }
             if (mySnake.AnchorPoint.X < 0 || mySnake.AnchorPoint.Y < 0 ||
-                mySnake.AnchorPoint.X >= this.Width - SQUARESIZE * 2 || mySnake.AnchorPoint.Y >= this.Height - SQUARESIZE * 2)
+                mySnake.AnchorPoint.X >= this.Width - squareSize * 2 || mySnake.AnchorPoint.Y >= this.Height - squareSize * 2)
             {
-                if (MessageBox.Show("Looser!\nTry again?", "Message!", MessageBoxButtons.YesNo) == DialogResult.No)
-                {
-                    Application.Exit();
-                }
+                
                 resetGame = true;
 
             }
             if (resetGame)
             {
+                if (MessageBox.Show("Looser!\nTry again?", "Message!", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    Application.Exit();
+                }
+
+                this.Hide();
+                userChoice.Show();
                 ResetGame();
             }
             Redraw();
@@ -139,21 +158,22 @@ namespace _26_Mar_CS_Project_Snake
 
                 // throw;
             }
+            mySnake.EatFruit(fruits);
             SolidBrush brush = new SolidBrush(Color.Black);
 
             Pen pen = new Pen(Color.Black);
-            graphics.FillRectangle(brush, new Rectangle(0, 0, x * SQUARESIZE, y * SQUARESIZE));
+            graphics.FillRectangle(brush, new Rectangle(0, 0, x * squareSize, y * squareSize));
             int count = 1;
             foreach (var item in fruits)
             {
                 brush.Color = Color.FromArgb(item.A, item.R, item.G, item.B);
-                graphics.FillRectangle(brush, new Rectangle(item.X, item.Y, SQUARESIZE, SQUARESIZE));
-                graphics.DrawRectangle(pen, new Rectangle(item.X, item.Y, SQUARESIZE, SQUARESIZE));
-                graphics.DrawString(count++.ToString(), this.Font, new SolidBrush(Color.Black), item.X + SQUARESIZE / 2, item.Y + SQUARESIZE / 2);
+                graphics.FillRectangle(brush, new Rectangle(item.X, item.Y, squareSize, squareSize));
+                graphics.DrawRectangle(pen, new Rectangle(item.X, item.Y, squareSize, squareSize));
+                graphics.DrawString(count++.ToString(), this.Font, new SolidBrush(Color.Black), item.X + squareSize / 2, item.Y + squareSize / 2);
             }
-            mySnake.EatFruit(fruits);
-            mySnake.DrawSnake(graphics);
-            graphics.DrawString($"Level: {level}", this.Font, new SolidBrush(Color.Black), x * SQUARESIZE, y * SQUARESIZE);
+            
+            mySnake.Draw(graphics);
+            graphics.DrawString($"{x}x{y}, Level: {level}", this.Font, new SolidBrush(Color.Black), x * squareSize, y * squareSize);
 
 
         }
@@ -164,30 +184,30 @@ namespace _26_Mar_CS_Project_Snake
             rando = new Random();
             
             
-            //this.Width = x * SQUARESIZE;
-            //this.Height = y * SQUARESIZE;
+            //this.Width = x * squareSize;
+            //this.Height = y * squareSize;
             ResetGame();
-            //this.Width = x * SQUARESIZE;
-            //this.Height = y * SQUARESIZE;
+            //this.Width = x * squareSize;
+            //this.Height = y * squareSize;
         }
 
-        private void ResetGame()
+        public void ResetGame()
         {
             level = 0;
             delayTime = 500;
-            x = this.Width / SQUARESIZE - 1;
-            y = this.Height / SQUARESIZE - 1;
+            x = this.Width / squareSize - 1;
+            y = this.Height / squareSize - 1;
             movedDirection = new Queue<Direction>();
 
             mySnake = new Snake(
                 new Coord(0, 0),
-                1, SQUARESIZE,0, 255, 0, 0);
+                1, squareSize,0, 255, 0, 0);
 
             fruitsCount = 0;
             ResetFruits();
         }
 
-        private void ResetFruits()
+        public void ResetFruits()
         {
             level++;
             fruitsCount++;
@@ -197,7 +217,7 @@ namespace _26_Mar_CS_Project_Snake
             {
                 do
                 {
-                    randomCoord = new Coord(rando.Next(x) * SQUARESIZE, rando.Next(y) * SQUARESIZE);
+                    randomCoord = new Coord(rando.Next(x) * squareSize, rando.Next(y) * squareSize);
                 } while (fruits.Contains(randomCoord) || mySnake.Body.Contains(randomCoord));
 
                 fruits.Add(new Square(

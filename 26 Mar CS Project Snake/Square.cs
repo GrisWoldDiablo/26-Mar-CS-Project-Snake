@@ -33,8 +33,7 @@ namespace _26_Mar_CS_Project_Snake
 
         public override bool Equals(object obj)
         {
-            var square = obj as Square;
-            return square != null &&
+            return obj is Square square &&
                    this.X == square.X &&
                    this.Y == square.Y;
         }
