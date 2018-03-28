@@ -95,7 +95,7 @@ namespace _26_Mar_CS_Project_Snake
             }
             if (resetGame)
             {
-                if (MessageBox.Show("Looser!\nTry again?", "Message!", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show($"You ate {mySnake.Body.Count-1} fruits.\nTry again?", "Message!", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     Application.Exit();
                 }
@@ -173,7 +173,7 @@ namespace _26_Mar_CS_Project_Snake
             }
             
             mySnake.Draw(graphics);
-            graphics.DrawString($"{x}x{y}, Level: {level}", this.Font, new SolidBrush(Color.Black), x * squareSize, y * squareSize);
+            graphics.DrawString($"{x}x{y},Fruits: {mySnake.Body.Count - 1}, Level: {level}", this.Font, new SolidBrush(Color.Black), x, y * squareSize);
 
 
         }
