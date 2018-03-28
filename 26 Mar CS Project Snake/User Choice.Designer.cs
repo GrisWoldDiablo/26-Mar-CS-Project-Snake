@@ -40,6 +40,7 @@
             this.TextBox_SquareSize.Name = "TextBox_SquareSize";
             this.TextBox_SquareSize.Size = new System.Drawing.Size(100, 20);
             this.TextBox_SquareSize.TabIndex = 0;
+            this.TextBox_SquareSize.Text = "100";
             // 
             // button1
             // 
