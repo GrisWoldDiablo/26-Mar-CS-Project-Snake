@@ -92,7 +92,7 @@ namespace _26_Mar_CS_Project_Snake
                 resetGame = true;
             }
             if (mySnake.AnchorPoint.X < 0 || mySnake.AnchorPoint.Y < 0 ||
-                mySnake.AnchorPoint.X >= this.Width - squareSize * 2 || mySnake.AnchorPoint.Y >= this.Height - squareSize * 2)
+                mySnake.AnchorPoint.X >= x * squareSize || mySnake.AnchorPoint.Y >= y * squareSize )
             {
                 
                 resetGame = true;
@@ -100,7 +100,7 @@ namespace _26_Mar_CS_Project_Snake
             }
             if (resetGame)
             {
-                if (MessageBox.Show($"You ate {mySnake.Body.Count-1} fruits.\nTry again?", "Message!", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show($"You ate {mySnake.Body.Count-1} fruits.\nTry again?", "GameOver!", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     Application.Exit();
                 }
@@ -178,14 +178,14 @@ namespace _26_Mar_CS_Project_Snake
             }
             
             mySnake.Draw(graphics);
+            brush.Color = Color.White;
+            graphics.FillRectangle(brush, new Rectangle(0, y * squareSize, x * squareSize, 15));
             graphics.DrawString($"{x}x{y},Fruits: {mySnake.Body.Count - 1}, Level: {level}", this.Font, new SolidBrush(Color.Black), x, y * squareSize);
-
-            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            graphics = this.CreateGraphics();
+            
             rando = new Random();
             
             
@@ -200,8 +200,12 @@ namespace _26_Mar_CS_Project_Snake
         {
             level = 0;
             delayTime = 500;
-            x = this.Width / squareSize - 1;
-            y = this.Height / squareSize - 1;
+            this.Width = 800;
+            this.Height = 640;
+            x = this.ClientSize.Width / squareSize - 1;
+            y = this.ClientSize.Height / squareSize - 1;
+            this.Height = x * squareSize + 20;
+            graphics = this.CreateGraphics();
             movedDirection = new Queue<Direction>();
 
             mySnake = new Snake(

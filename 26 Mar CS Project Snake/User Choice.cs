@@ -78,5 +78,10 @@ namespace _26_Mar_CS_Project_Snake
             myColor = Color.FromArgb(alpha, red, green, blue);
             PictBoxColor.BackColor = myColor;
         }
+
+        private void TextBox_SquareSize_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
