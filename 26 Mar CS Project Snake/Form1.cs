@@ -22,6 +22,7 @@ namespace _26_Mar_CS_Project_Snake
         static int fruitsCount = 0;
         static int x;
         static int y;
+        public static Color initColor;
         static int delayTime = 500;
         const int SPEEDINC = 25;
         User_Choice userChoice;
@@ -40,6 +41,7 @@ namespace _26_Mar_CS_Project_Snake
 
         private async void Loop()
         {
+            
             while (true)
             {
 
@@ -71,7 +73,10 @@ namespace _26_Mar_CS_Project_Snake
             if (fruits.Count == 0)
             {
                 delayTime -= SPEEDINC;
-                ResetFruits();
+                if (ResetFruits())
+                {
+                    resetGame = true;
+                }
             }
             if (movedDirection.Count > 0)
             {
@@ -175,7 +180,7 @@ namespace _26_Mar_CS_Project_Snake
             mySnake.Draw(graphics);
             graphics.DrawString($"{x}x{y},Fruits: {mySnake.Body.Count - 1}, Level: {level}", this.Font, new SolidBrush(Color.Black), x, y * squareSize);
 
-
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -201,16 +206,21 @@ namespace _26_Mar_CS_Project_Snake
 
             mySnake = new Snake(
                 new Coord(0, 0),
-                1, squareSize,0, 255, 0, 0);
+                1, squareSize, initColor.A, initColor.R, initColor.G, initColor.B);
 
             fruitsCount = 0;
             ResetFruits();
         }
 
-        public void ResetFruits()
+        public bool ResetFruits()
         {
             level++;
             fruitsCount++;
+            if (fruitsCount + mySnake.Body.Count > x * y)
+            {
+                MessageBox.Show("You win!");
+                return true;
+            }
             Coord randomCoord;
             fruits = new List<Square>();
             for (int i = 0; i < fruitsCount; i++)
@@ -229,6 +239,7 @@ namespace _26_Mar_CS_Project_Snake
                     rando.Next(255)) // Color Blue
                     );
             }
+            return false;
         }
     }
 }

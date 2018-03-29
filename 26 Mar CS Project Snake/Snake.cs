@@ -21,9 +21,10 @@ namespace _26_Mar_CS_Project_Snake
         private int size;
         SolidBrush brush;
         Pen pen;
-
+        Color headColor;
         public Snake(Coord anchorPoint, float qtyOfSquare, int size, int a, int r, int g, int b)
         {
+            headColor = Color.FromArgb(a, r, g, b);
             brush = new SolidBrush(Color.White);
             pen = new Pen(Color.Red);
             this.anchorPoint = anchorPoint;
@@ -33,7 +34,7 @@ namespace _26_Mar_CS_Project_Snake
             for (int i = 0; i < qtyOfSquare; i++)
             {
                 r = 255 - tempColor * i;
-                body.Add(new Square(anchorPoint.X - (this.size * i), anchorPoint.Y, a, r, g, b));
+                body.Add(new Square(anchorPoint.X - (this.size * i), anchorPoint.Y, headColor.A, headColor.R, headColor.G, headColor.B));
             }
         }
 
@@ -45,7 +46,7 @@ namespace _26_Mar_CS_Project_Snake
                 graphics.FillRectangle(brush, new Rectangle(item.X + this.size / 4, item.Y + this.size / 4, this.size / 2, this.size / 2));
                 graphics.DrawRectangle(pen, new Rectangle(item.X + this.size / 4, item.Y + this.size / 4, this.size / 2, this.size / 2));
             }
-            brush.Color = Color.FromArgb(255, 0, 0);
+            brush.Color = headColor;
             graphics.FillEllipse(brush, body[0].X, body[0].Y, this.size, this.size);
         }
         
