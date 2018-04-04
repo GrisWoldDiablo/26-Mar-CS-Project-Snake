@@ -46,6 +46,7 @@ namespace _26_Mar_CS_Project_Snake
                 graphics.FillRectangle(brush, new Rectangle(item.X + this.size / 4, item.Y + this.size / 4, this.size / 2, this.size / 2));
                 graphics.DrawRectangle(pen, new Rectangle(item.X + this.size / 4, item.Y + this.size / 4, this.size / 2, this.size / 2));
             }
+            
             brush.Color = headColor;
             graphics.FillEllipse(brush, body[0].X, body[0].Y, this.size, this.size);
         }

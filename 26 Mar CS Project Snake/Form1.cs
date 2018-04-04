@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
+//using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -29,36 +29,31 @@ namespace _26_Mar_CS_Project_Snake
 
         static int level = 0;
 
+        Timer myTimer = new Timer();
+
         public Form1()
         {
             userChoice = new User_Choice();
             userChoice.Show();
             this.Visible = false;
             InitializeComponent();
-            //this.Enabled = false;
-            Loop();
+
+            myTimer.Tick += new EventHandler(Looper);
+            myTimer.Interval = delayTime;
+            myTimer.Start();
+            //Loop();
         }
 
-        private async void Loop()
+        private void Looper(object sender, EventArgs e)
         {
-            
-            while (true)
-            {
-
-                try
-                {
-                    await GameLoop();
-                }
-                catch (Exception)
-                {
-                    //throw;
-                }
-            }            
+            GameLoop();
+            //myTimer.Interval = delayTime;
         }
-        private async Task GameLoop()
+
+        private void GameLoop()
         {
             bool resetGame = false;
-            await Task.Delay(delayTime);
+            
             if (userChoice.Visible)
             {
                 this.Hide();
@@ -73,6 +68,9 @@ namespace _26_Mar_CS_Project_Snake
             if (fruits.Count == 0)
             {
                 delayTime -= SPEEDINC;
+                myTimer.Interval = delayTime;
+                myTimer.Stop();
+                myTimer.Start();
                 if (ResetFruits())
                 {
                     resetGame = true;
@@ -100,6 +98,7 @@ namespace _26_Mar_CS_Project_Snake
             }
             if (resetGame)
             {
+                myTimer.Stop();
                 if (MessageBox.Show($"You ate {mySnake.Body.Count-1} fruits.\nTry again?", "GameOver!", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     Application.Exit();
@@ -198,8 +197,9 @@ namespace _26_Mar_CS_Project_Snake
 
         public void ResetGame()
         {
+            
             level = 0;
-            delayTime = 500;
+            myTimer.Interval = delayTime = 500;
             this.Width = 800;
             this.Height = 640;
             x = this.ClientSize.Width / squareSize - 1;
@@ -214,6 +214,7 @@ namespace _26_Mar_CS_Project_Snake
 
             fruitsCount = 0;
             ResetFruits();
+            myTimer.Start();
         }
 
         public bool ResetFruits()
@@ -222,6 +223,7 @@ namespace _26_Mar_CS_Project_Snake
             fruitsCount++;
             if (fruitsCount + mySnake.Body.Count > x * y)
             {
+                myTimer.Stop();
                 MessageBox.Show("You win!");
                 return true;
             }
